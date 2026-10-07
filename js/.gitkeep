@@ -1,0 +1,310 @@
+const STORAGE_KEYS = {
+  students: 'mmsu_students',
+  requests: 'mmsu_requests',
+  adminSession: 'mmsu_admin_session',
+};
+
+const state = {
+  currentPage: 1,
+  pageSize: 8,
+  selectedRequestId: null,
+  currentFilter: 'All',
+  currentSearch: '',
+};
+
+const elements = {
+  messageContainer: document.getElementById('messageContainer'),
+  adminEmailDisplay: document.getElementById('adminEmailDisplay'),
+  signOutButton: document.getElementById('signOutButton'),
+  totalRequestsCount: document.getElementById('totalRequestsCount'),
+  pendingRequestsCount: document.getElementById('pendingRequestsCount'),
+  readyRequestsCount: document.getElementById('readyRequestsCount'),
+  searchInput: document.getElementById('searchInput'),
+  statusFilter: document.getElementById('statusFilter'),
+  requestsTableBody: document.getElementById('requestsTableBody'),
+  previousPageButton: document.getElementById('previousPageButton'),
+  nextPageButton: document.getElementById('nextPageButton'),
+  pageInformation: document.getElementById('pageInformation'),
+  requestModal: document.getElementById('requestModal'),
+  closeModalButton: document.getElementById('closeModalButton'),
+  modalRequestId: document.getElementById('modalRequestId'),
+  modalStudentName: document.getElementById('modalStudentName'),
+  modalStudentId: document.getElementById('modalStudentId'),
+  modalCourse: document.getElementById('modalCourse'),
+  modalCollege: document.getElementById('modalCollege'),
+  modalDocumentType: document.getElementById('modalDocumentType'),
+  modalPurpose: document.getElementById('modalPurpose'),
+  modalDateRequested: document.getElementById('modalDateRequested'),
+  modalDateReceived: document.getElementById('modalDateReceived'),
+  modalYearLevel: document.getElementById('modalYearLevel'),
+  modalStatus: document.getElementById('modalStatus'),
+  modalRemarks: document.getElementById('modalRemarks'),
+  deleteModalRequestButton: document.getElementById('deleteModalRequestButton'),
+  saveRequestButton: document.getElementById('saveRequestButton'),
+};
+
+function showMessage(type, text) {
+  elements.messageContainer.innerHTML = `<div class="system-message ${type}">${text}</div>`;
+}
+
+function getRequests() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEYS.requests);
+    return raw ? JSON.parse(raw) : [];
+  } catch (error) {
+    return [];
+  }
+}
+
+function saveRequests(requests) {
+  localStorage.setItem(STORAGE_KEYS.requests, JSON.stringify(requests));
+}
+
+function ensureAdminSession() {
+  const session = localStorage.getItem(STORAGE_KEYS.adminSession);
+  if (session !== 'active') {
+    window.location.href = 'admin-login.html';
+    return false;
+  }
+  return true;
+}
+
+function getFilteredRequests() {
+  const searchTerm = state.currentSearch.trim().toLowerCase();
+  let requests = getRequests();
+
+  if (state.currentFilter !== 'All') {
+    requests = requests.filter((request) => request.status === state.currentFilter);
+  }
+
+  if (searchTerm) {
+    requests = requests.filter((request) => {
+      const haystack = [
+        request.requestNumber,
+        request.fullName,
+        request.studentId,
+        request.documentType,
+        request.purpose,
+      ].join(' ').toLowerCase();
+      return haystack.includes(searchTerm);
+    });
+  }
+
+  return requests.sort((a, b) => new Date(b.dateRequestedRaw || b.dateRequested) - new Date(a.dateRequestedRaw || a.dateRequested));
+}
+
+function renderStats() {
+  const requests = getRequests();
+  const total = requests.length;
+  const requested = requests.filter((item) => item.status === 'Requested').length;
+  const received = requests.filter((item) => item.status === 'Received').length;
+
+  elements.totalRequestsCount.textContent = String(total);
+  elements.pendingRequestsCount.textContent = String(requested);
+  elements.readyRequestsCount.textContent = String(received);
+}
+
+function renderTable() {
+  const filteredRequests = getFilteredRequests();
+  const totalPages = Math.max(1, Math.ceil(filteredRequests.length / state.pageSize));
+  if (state.currentPage > totalPages) state.currentPage = totalPages;
+
+  const startIndex = (state.currentPage - 1) * state.pageSize;
+  const visibleRequests = filteredRequests.slice(startIndex, startIndex + state.pageSize);
+
+  if (!visibleRequests.length) {
+    elements.requestsTableBody.innerHTML = '<tr><td colspan="7" class="empty-table-message">No requests match your current filters.</td></tr>';
+  } else {
+    elements.requestsTableBody.innerHTML = visibleRequests.map((request) => {
+      const studentName = request.fullName || 'Unknown Student';
+      const statusClass = request.status === 'Received' ? 'status-received' : 'status-requested';
+      return `
+        <tr>
+          <td>${request.requestNumber}</td>
+          <td>
+            <span class="student-table-name">${studentName}</span>
+            <span class="student-table-id">${request.studentId}</span>
+          </td>
+          <td>${request.documentType}</td>
+          <td>${request.dateRequested || '—'}</td>
+          <td>${request.dateReceived || '—'}</td>
+          <td><span class="status-badge ${statusClass}">${request.status}</span></td>
+          <td>
+            <div class="table-action-buttons">
+              <button type="button" class="manage-button" data-request-id="${request.id}">Manage</button>
+              <button type="button" class="delete-request-button" data-request-id="${request.id}">Delete</button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  elements.pageInformation.textContent = `Page ${state.currentPage} of ${totalPages}`;
+  elements.previousPageButton.disabled = state.currentPage === 1;
+  elements.nextPageButton.disabled = state.currentPage >= totalPages;
+
+  document.querySelectorAll('.manage-button').forEach((button) => {
+    button.addEventListener('click', () => openRequestModal(button.dataset.requestId));
+  });
+
+  document.querySelectorAll('.delete-request-button').forEach((button) => {
+    button.addEventListener('click', () => deleteRequest(button.dataset.requestId));
+  });
+}
+
+function openRequestModal(requestId) {
+  const request = getRequests().find((item) => item.id === requestId);
+  if (!request) return;
+
+  state.selectedRequestId = requestId;
+  elements.modalRequestId.textContent = request.requestNumber;
+  elements.modalStudentName.textContent = request.fullName || '—';
+  elements.modalStudentId.textContent = request.studentId || '—';
+  elements.modalCourse.textContent = request.course || '—';
+  elements.modalCollege.textContent = request.college || 'College of Teacher Education';
+  elements.modalDocumentType.textContent = request.documentType || '—';
+  elements.modalPurpose.textContent = request.purpose || '—';
+  elements.modalDateRequested.textContent = request.dateRequested || '—';
+  elements.modalDateReceived.textContent = request.dateReceived || '—';
+  elements.modalYearLevel.textContent = request.yearLevel || '—';
+  elements.modalStatus.value = request.status || 'Requested';
+  elements.modalRemarks.value = request.remarksByRegistrar || '';
+  elements.requestModal.showModal();
+}
+
+function closeRequestModal() {
+  if (elements.requestModal.open) {
+    elements.requestModal.close();
+  }
+  state.selectedRequestId = null;
+}
+
+function deleteRequest(requestId) {
+  const requests = getRequests();
+  const request = requests.find((item) => item.id === requestId);
+  if (!request) return;
+
+  const confirmed = window.confirm(`Delete request ${request.requestNumber}? This action cannot be undone.`);
+  if (!confirmed) return;
+
+  const nextRequests = requests.filter((item) => item.id !== requestId);
+  saveRequests(nextRequests);
+  renderStats();
+  renderTable();
+  showMessage('success-message', `Request ${request.requestNumber} was deleted.`);
+}
+
+function saveRequestChanges() {
+  if (!state.selectedRequestId) return;
+
+  const requests = getRequests();
+  const target = requests.find((item) => item.id === state.selectedRequestId);
+  if (!target) return;
+
+  target.status = elements.modalStatus.value;
+  target.remarksByRegistrar = elements.modalRemarks.value.trim();
+  if (target.status === 'Received' && !target.dateReceived) {
+    target.dateReceived = new Date().toLocaleDateString('en-PH', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    });
+  }
+  saveRequests(requests);
+
+  renderStats();
+  renderTable();
+  closeRequestModal();
+  showMessage('success-message', `Request ${target.requestNumber} was updated successfully.`);
+}
+
+function handleSearch(event) {
+  state.currentSearch = event.target.value;
+  state.currentPage = 1;
+  renderTable();
+}
+
+function handleStatusFilter(event) {
+  state.currentFilter = event.target.value;
+  state.currentPage = 1;
+  renderTable();
+}
+
+function handleSignOut() {
+  localStorage.removeItem(STORAGE_KEYS.adminSession);
+  window.location.href = 'admin-login.html';
+}
+
+function initDashboard() {
+  if (!ensureAdminSession()) return;
+
+  const adminEmail = 'admin@mmsu.edu.ph';
+  elements.adminEmailDisplay.textContent = adminEmail;
+
+  elements.searchInput.addEventListener('input', handleSearch);
+  elements.statusFilter.addEventListener('change', handleStatusFilter);
+  elements.previousPageButton.addEventListener('click', () => {
+    if (state.currentPage > 1) {
+      state.currentPage -= 1;
+      renderTable();
+    }
+  });
+
+  elements.nextPageButton.addEventListener('click', () => {
+    const requests = getFilteredRequests();
+    const totalPages = Math.max(1, Math.ceil(requests.length / state.pageSize));
+    if (state.currentPage < totalPages) {
+      state.currentPage += 1;
+      renderTable();
+    }
+  });
+
+  elements.closeModalButton.addEventListener('click', closeRequestModal);
+  elements.deleteModalRequestButton.addEventListener('click', () => {
+    if (state.selectedRequestId) {
+      deleteRequest(state.selectedRequestId);
+      closeRequestModal();
+    }
+  });
+  elements.saveRequestButton.addEventListener('click', saveRequestChanges);
+  elements.signOutButton.addEventListener('click', handleSignOut);
+
+  if (!localStorage.getItem(STORAGE_KEYS.requests)) {
+    const defaultRequest = {
+      id: crypto.randomUUID(),
+      requestNumber: 'REQ-20260101-0001',
+      studentId: '2024-001',
+      fullName: 'Maria Santos',
+      course: 'Bachelor of Elementary Education',
+      yearLevel: '3rd Year',
+      college: 'College of Teacher Education',
+      documentType: 'Transcript of Records (TOR)',
+      purpose: 'Scholarship application',
+      remarks: 'Need to submit before January 15.',
+      status: 'Requested',
+      dateRequested: 'Jan 10, 2026',
+      dateRequestedRaw: '2026-01-10',
+      dateReceived: '',
+      remarksByRegistrar: '',
+    };
+    saveRequests([defaultRequest]);
+  }
+
+  renderStats();
+  renderTable();
+}
+
+initDashboard();
+
+
+
+
+
+
+
+
+
+
+
+

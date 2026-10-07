@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="MMSU College of Teacher Education Document Request System"
+    />
+    <title>MMSU CTE | Document Request System</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body class="student-portal-page">
+    <header class="university-header">
+      <div class="container header-content">
+        <div class="university-brand">
+          <div class="logo-placeholder">MMSU</div>
+
+          <div class="university-brand-text">
+            <p class="university-name">Mariano Marcos State University</p>
+            <h1>College of Teacher Education</h1>
+            <p class="system-name">Document Request System</p>
+          </div>
+        </div>
+
+        <div class="portal-label">Student Portal</div>
+      </div>
+    </header>
+
+    <main class="container main-content">
+      <section class="page-heading">
+        <div class="page-heading-content">
+          <p class="section-label">College of Teacher Education</p>
+          <h2>Request an Official Document</h2>
+          <p>
+            Scan the barcode on your school ID or manually enter your Student ID
+            number to begin.
+          </p>
+        </div>
+
+        <div class="page-heading-badge">Student Services</div>
+      </section>
+
+      <div id="messageContainer" class="message-container" aria-live="polite"></div>
+
+      <div class="student-layout">
+        <section class="content-card student-identification-card">
+          <div class="card-heading">
+            <div class="step-number">1</div>
+            <div class="card-heading-text">
+              <h3>Scan or Enter Student ID</h3>
+              <p>Retrieve your student information and submitted requests.</p>
+            </div>
+          </div>
+
+          <form id="scanForm">
+            <div class="form-group">
+              <label for="studentId">Student ID Number</label>
+              <input
+                type="text"
+                id="studentId"
+                name="studentId"
+                placeholder="Scan barcode or enter Student ID"
+                autocomplete="off"
+                autofocus
+                required
+              />
+            </div>
+
+            <div class="student-id-buttons">
+              <button type="submit" id="findStudentButton" class="primary-button">
+                Find Student
+              </button>
+
+              <button type="button" id="openScannerButton" class="outline-button">
+                Scan Barcode
+              </button>
+            </div>
+
+            <p class="form-help">
+              Use the camera scanner or enter the Student ID manually. The app works
+              fully offline.
+            </p>
+          </form>
+
+          <div id="barcodeScannerSection" class="barcode-scanner-section hidden">
+            <div class="scanner-header">
+              <div>
+                <h4>Scan Student ID Barcode</h4>
+                <p>Allow camera access and position the barcode inside the scanning area.</p>
+              </div>
+
+              <button
+                type="button"
+                id="closeScannerButton"
+                class="close-scanner-button"
+                aria-label="Close barcode scanner"
+              >
+                &times;
+              </button>
+            </div>
+
+            <div id="barcodeReader" class="barcode-reader"></div>
+            <p id="scannerStatus" class="scanner-status">Starting camera...</p>
+          </div>
+
+          <div id="studentInformation" class="student-information hidden">
+            <div class="information-heading">
+              <div>
+                <span class="information-heading-label">Student Information</span>
+                <strong>Record Found</strong>
+              </div>
+              <span class="record-found-badge">Verified</span>
+            </div>
+
+            <div class="student-record-table-wrapper">
+              <table class="student-record-table">
+                <tbody>
+                  <tr>
+                    <th scope="row">Student ID</th>
+                    <td id="displayStudentId">-</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Full Name</th>
+                    <td id="displayFullName">-</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Course</th>
+                    <td id="displayCourse">-</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">College</th>
+                    <td id="displayCollege">College of Teacher Education</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Year Level</th>
+                    <td id="displayYearLevel">-</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <button
+              type="button"
+              id="viewRequestsButton"
+              class="outline-button view-requests-button"
+            >
+              View My Requests
+            </button>
+          </div>
+        </section>
+
+        <section class="content-card document-request-card">
+          <div class="card-heading">
+            <div class="step-number">2</div>
+            <div class="card-heading-text">
+              <h3>Document Request Form</h3>
+              <p>Select the official document that you need.</p>
+            </div>
+          </div>
+
+          <form id="requestForm">
+            <div class="form-group">
+              <label for="documentType">Document Type</label>
+              <select id="documentType" name="documentType" required>
+                <option value="">Select a document</option>
+                <option value="Transcript of Records (TOR)">Transcript of Records (TOR)</option>
+                <option value="Certificate of Grades (COG)">Certificate of Grades (COG)</option>
+                <option value="Certificate of Enrollment">Certificate of Enrollment</option>
+                <option value="Good Moral Certificate">Good Moral Certificate</option>
+                <option value="Other Registrar Document">Other Registrar Document</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="purpose">Purpose of Request</label>
+              <input
+                type="text"
+                id="purpose"
+                name="purpose"
+                placeholder="Example: Employment or board examination"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="remarks">
+                Additional Details
+                <span class="optional-text">Optional</span>
+              </label>
+              <textarea
+                id="remarks"
+                name="remarks"
+                rows="4"
+                placeholder="Enter additional instructions or information"
+              ></textarea>
+            </div>
+
+            <p class="submission-help">
+              Review the document type and purpose before submitting.
+            </p>
+
+            <button
+              type="submit"
+              id="submitRequestButton"
+              class="primary-button full-width"
+              disabled
+            >
+              Submit Document Request
+            </button>
+          </form>
+        </section>
+      </div>
+
+      <section class="registrar-link-section">
+        <div>
+          <strong>Registrar Personnel</strong>
+          <p>Authorized College of Teacher Education personnel only.</p>
+        </div>
+
+        <a href="admin-login.html" class="outline-button registrar-login-link">
+          Registrar Login
+        </a>
+      </section>
+    </main>
+
+    <dialog id="requestHistoryDialog" class="request-history-dialog" aria-labelledby="requestHistoryDialogTitle">
+      <section class="request-history-dialog-content">
+        <button
+          type="button"
+          id="closeRequestHistoryButton"
+          class="request-history-close-button"
+          aria-label="Close request history"
+        >
+          &times;
+        </button>
+
+        <div class="request-history-dialog-header">
+          <div>
+            <h3 id="requestHistoryDialogTitle">My Document Requests</h3>
+            <p>Requests associated with the scanned Student ID.</p>
+          </div>
+
+          <button type="button" id="refreshHistoryButton" class="outline-button" disabled>
+            Refresh
+          </button>
+        </div>
+
+        <div class="request-history-dialog-body">
+          <div class="table-container">
+            <table class="student-request-table">
+              <thead>
+                <tr>
+                  <th scope="col">Request Number</th>
+                  <th scope="col">Requested Document</th>
+                  <th scope="col">Date Requested</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Date Received</th>
+                  <th scope="col">Action</th>
+                </tr>
+              </thead>
+              <tbody id="requestHistoryBody">
+                <tr>
+                  <td colspan="6" class="empty-table-message">No document requests were found.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p class="request-history-note">
+            Select Receive only after the requested document has already been given to you.
+          </p>
+        </div>
+      </section>
+    </dialog>
+
+    <dialog id="firstTimeStudentSection" class="registration-dialog" aria-labelledby="registrationModalTitle">
+      <section class="registration-dialog-content">
+        <button
+          type="button"
+          id="closeRegistrationButton"
+          class="close-registration-button"
+          aria-label="Close registration form"
+        >
+          &times;
+        </button>
+
+        <div class="registration-modal-header">
+          <p class="section-label">New Student</p>
+          <h3 id="registrationModalTitle">First-Time Student Registration</h3>
+          <p>No existing student record was found. Complete the information below to continue.</p>
+        </div>
+
+        <form id="studentRegistrationForm" class="registration-modal-body">
+          <div class="registration-form-grid">
+            <div class="form-group">
+              <label for="registrationStudentId">Student ID</label>
+              <input type="text" id="registrationStudentId" readonly required />
+              <p class="form-help">Automatically copied from the Student ID input.</p>
+            </div>
+
+            <div class="form-group">
+              <label for="registrationFullName">Full Name</label>
+              <input
+                type="text"
+                id="registrationFullName"
+                placeholder="Enter your complete name"
+                autocomplete="name"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="registrationCourse">Course</label>
+              <select id="registrationCourse" required>
+                <option value="">Select your course</option>
+                <option value="Bachelor of Elementary Education">Bachelor of Elementary Education</option>
+                <option value="Bachelor of Secondary Education">Bachelor of Secondary Education</option>
+                <option value="Bachelor of Early Childhood Education">Bachelor of Early Childhood Education</option>
+                <option value="Bachelor of Technology and Livelihood Education">Bachelor of Technology and Livelihood Education</option>
+                <option value="Bachelor of Physical Education">Bachelor of Physical Education</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="registrationYearLevel">Year Level</label>
+              <select id="registrationYearLevel" required>
+                <option value="">Select year level</option>
+                <option value="1st Year">1st Year</option>
+                <option value="2nd Year">2nd Year</option>
+                <option value="3rd Year">3rd Year</option>
+                <option value="4th Year">4th Year</option>
+                <option value="5th Year">5th Year</option>
+                <option value="Graduate">Graduate</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="fixed-college-notice">
+            <span>College</span>
+            <strong>College of Teacher Education</strong>
+          </div>
+
+          <div class="information-notice">
+            <strong>Review your information</strong>
+            <p>Make sure all student information is correct before saving.</p>
+          </div>
+
+          <div class="registration-modal-actions">
+            <button type="button" id="cancelRegistrationButton" class="outline-button">
+              Cancel
+            </button>
+            <button type="submit" id="saveStudentButton" class="primary-button">
+              Save Student Information
+            </button>
+          </div>
+        </form>
+      </section>
+    </dialog>
+
+    <footer class="site-footer">
+      <div class="container footer-content">
+        <p>&copy; 2026 Mariano Marcos State University</p>
+        <p>College of Teacher Education · Document Request System</p>
+      </div>
+    </footer>
+
+    <script src="js/student.js"></script>
+  </body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="MMSU College of Teacher Education Administrative Login" />
+    <title>MMSU Registrar | Admin Login</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="admin-login.css" />
+  </head>
+
+  <body class="login-page">
+    <main class="login-container">
+      <section class="login-card">
+        <div class="login-brand">
+          <div class="logo-placeholder large-logo">MMSU</div>
+          <p class="university-name">Mariano Marcos State University</p>
+          <h1>College of Teacher Education</h1>
+          <p class="system-name">Authorized Personnel Login</p>
+        </div>
+
+        <div id="messageContainer" aria-live="polite"></div>
+
+        <form id="adminLoginForm" novalidate>
+          <div class="form-group">
+            <label for="adminEmail">Email Address</label>
+            <input
+              type="email"
+              id="adminEmail"
+              name="adminEmail"
+              placeholder="admin@mmsu.edu.ph"
+              autocomplete="email"
+              inputmode="email"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="adminPassword">Password</label>
+            <div class="password-input-wrapper">
+              <input
+                type="password"
+                id="adminPassword"
+                name="adminPassword"
+                placeholder="Enter your password"
+                autocomplete="current-password"
+                required
+              />
+              <button
+                type="button"
+                id="togglePasswordButton"
+                class="password-toggle-button"
+                aria-label="Show password"
+              >
+                Show
+              </button>
+            </div>
+          </div>
+
+          <button type="submit" id="loginButton" class="primary-button full-width">
+            Sign In
+          </button>
+        </form>
+
+        <div class="login-note">
+          <strong>Authorized personnel only</strong>
+          <p>
+            Access to student document requests is restricted to authorized College of Teacher
+            Education personnel.
+          </p>
+        </div>
+
+        <a href="index.html" class="back-link">Return to Student Portal</a>
+      </section>
+    </main>
+
+    <script src="js/admin-login.js"></script>
+  </body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

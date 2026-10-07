@@ -1,0 +1,332 @@
+body.login-page {
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow-x: hidden;
+  background: radial-gradient(circle at top left, rgba(0, 102, 51, 0.08), transparent 34%), radial-gradient(circle at bottom right, rgba(212, 175, 55, 0.09), transparent 30%), #f1f5f2;
+  color: #1f2924;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.login-page .login-container {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 20px;
+}
+
+.login-page .login-card {
+  position: relative;
+  width: 100%;
+  max-width: 440px;
+  margin: 0 auto;
+  padding: 34px 38px 30px;
+  overflow: hidden;
+  border: 1px solid #d9e2dc;
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow: 0 24px 55px rgba(25, 58, 40, 0.12), 0 5px 16px rgba(25, 58, 40, 0.06);
+}
+
+.login-page .login-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 6px;
+  background: linear-gradient(90deg, #006633 0%, #006633 76%, #d4af37 76%, #d4af37 100%);
+}
+
+.login-page .login-brand {
+  margin: 0 0 27px;
+  text-align: center;
+}
+
+.login-page .logo-placeholder.large-logo {
+  width: 66px;
+  height: 66px;
+  display: grid;
+  place-items: center;
+  margin: 0 auto 15px;
+  border: 4px solid #ead47d;
+  border-radius: 50%;
+  background: #006633;
+  color: #ffffff;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  box-shadow: 0 7px 16px rgba(0, 102, 51, 0.17);
+}
+
+.login-page .login-brand .university-name {
+  margin: 0 0 7px;
+  color: #006633;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  line-height: 1.5;
+  text-transform: uppercase;
+}
+
+.login-page .login-brand h1 {
+  margin: 0 0 6px;
+  color: #1f2924;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+}
+
+.login-page .login-brand .system-name {
+  margin: 0;
+  color: #69736d;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.login-page #messageContainer {
+  width: 100%;
+  margin: 0 0 17px;
+}
+
+.login-page #messageContainer:empty {
+  display: none;
+}
+
+.login-page .system-message {
+  width: 100%;
+  padding: 11px 13px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  font-size: 11px;
+  line-height: 1.55;
+  text-align: left;
+}
+
+.login-page .error-message {
+  border-color: #efbebe;
+  background: #fff3f3;
+  color: #8b2929;
+}
+
+.login-page .success-message {
+  border-color: #add7bc;
+  background: #edf9f1;
+  color: #075d30;
+}
+
+.login-page #adminLoginForm {
+  width: 100%;
+  margin: 0;
+}
+
+.login-page .form-group {
+  width: 100%;
+  margin: 0 0 17px;
+}
+
+.login-page .form-group label {
+  display: block;
+  margin: 0 0 7px;
+  color: #28342d;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.login-page .form-group input {
+  width: 100%;
+  min-width: 0;
+  min-height: 47px;
+  display: block;
+  margin: 0;
+  padding: 11px 13px;
+  border: 1px solid #cbd7d0;
+  border-radius: 7px;
+  background: #ffffff;
+  color: #1f2924;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 12px;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.login-page .form-group input::placeholder {
+  color: #9aa49e;
+}
+
+.login-page .form-group input:hover {
+  border-color: #9caca3;
+}
+
+.login-page .form-group input:focus {
+  border-color: #006633;
+  box-shadow: 0 0 0 3px rgba(0, 102, 51, 0.11);
+}
+
+.login-page .form-group input:disabled {
+  background: #f2f5f3;
+  cursor: not-allowed;
+}
+
+.login-page .password-input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.login-page .password-input-wrapper input {
+  padding-right: 70px;
+}
+
+.login-page .password-toggle-button {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  min-width: 50px;
+  margin: 0;
+  padding: 7px 8px;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: #006633;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+.login-page .password-toggle-button:hover {
+  background: #edf7f1;
+}
+
+.login-page .password-toggle-button:focus-visible {
+  outline: 2px solid rgba(0, 102, 51, 0.25);
+  outline-offset: 1px;
+}
+
+.login-page .password-toggle-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.login-page #loginButton {
+  width: 100%;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 5px 0 0;
+  padding: 11px 18px;
+  border: 1px solid #006633;
+  border-radius: 7px;
+  background: #006633;
+  color: #ffffff;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+}
+
+.login-page #loginButton:hover {
+  border-color: #004b27;
+  background: #004b27;
+  box-shadow: 0 8px 18px rgba(0, 102, 51, 0.18);
+}
+
+.login-page #loginButton:active {
+  transform: translateY(1px);
+}
+
+.login-page #loginButton:disabled {
+  border-color: #89a99a;
+  background: #89a99a;
+  cursor: wait;
+}
+
+.login-page .login-note {
+  position: relative;
+  margin: 19px 0 0;
+  padding: 12px 13px 12px 16px;
+  border: 1px solid #eee1ad;
+  border-radius: 7px;
+  background: #fffaf0;
+}
+
+.login-page .login-note::before {
+  content: "";
+  position: absolute;
+  top: 11px;
+  bottom: 11px;
+  left: 0;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: #d4af37;
+}
+
+.login-page .login-note strong {
+  display: block;
+  margin: 0 0 4px;
+  color: #594915;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.login-page .login-note p {
+  margin: 0;
+  color: #776b48;
+  font-size: 9px;
+  line-height: 1.6;
+}
+
+.login-page .back-link {
+  width: fit-content;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 19px auto 0;
+  color: #5e6963;
+  font-size: 10px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.login-page .back-link::before {
+  content: "←";
+  margin-right: 6px;
+}
+
+.login-page .back-link:hover {
+  color: #006633;
+}
+
+@media (max-width: 350px) {
+  .login-page .login-card {
+    padding: 24px 16px 22px;
+  }
+
+  .login-page .login-brand h1 {
+    font-size: 18px;
+  }
+}
+
+
+
+
+
+
+
+
+
+

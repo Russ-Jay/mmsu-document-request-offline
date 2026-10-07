@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="MMSU College of Teacher Education Administrative Dashboard" />
+    <title>MMSU CTE | Admin Dashboard</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="admin-dashboard.css" />
+  </head>
+
+  <body class="admin-dashboard-page">
+    <header class="dashboard-header">
+      <div class="dashboard-container dashboard-header-content">
+        <div class="dashboard-brand">
+          <div class="dashboard-logo">MMSU</div>
+
+          <div class="dashboard-brand-text">
+            <p class="dashboard-university-name">Mariano Marcos State University</p>
+            <h1>College of Teacher Education</h1>
+            <p class="dashboard-system-name">Document Request Administration</p>
+          </div>
+        </div>
+
+        <div class="admin-account">
+          <div class="admin-account-details">
+            <span>Signed in as</span>
+            <strong id="adminEmailDisplay">Registrar Personnel</strong>
+          </div>
+
+          <button type="button" id="signOutButton" class="dashboard-outline-button">
+            Sign Out
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="dashboard-container dashboard-main">
+      <section class="dashboard-page-heading">
+        <div class="dashboard-heading-content">
+          <p class="dashboard-section-label">Registrar Dashboard</p>
+          <h2>Document Requests</h2>
+          <p>Monitor student document requests and receipt confirmations.</p>
+        </div>
+
+        <div class="academic-year">Academic Year 2026–2027</div>
+      </section>
+
+      <div id="messageContainer" class="dashboard-message-container" aria-live="polite"></div>
+
+      <section class="dashboard-statistics">
+        <article class="dashboard-stat-card total-stat">
+          <div class="dashboard-stat-details">
+            <span>Total Requests</span>
+            <p>All submitted requests</p>
+          </div>
+          <strong id="totalRequestsCount">0</strong>
+        </article>
+
+        <article class="dashboard-stat-card requested-stat">
+          <div class="dashboard-stat-details">
+            <span>Requested</span>
+            <p>Awaiting confirmation</p>
+          </div>
+          <strong id="pendingRequestsCount">0</strong>
+        </article>
+
+        <article class="dashboard-stat-card received-stat">
+          <div class="dashboard-stat-details">
+            <span>Received</span>
+            <p>Confirmed by students</p>
+          </div>
+          <strong id="readyRequestsCount">0</strong>
+        </article>
+
+        <strong id="processingRequestsCount" class="hidden-dashboard-element">0</strong>
+      </section>
+
+      <section class="dashboard-card">
+        <div class="dashboard-toolbar">
+          <div class="dashboard-toolbar-heading">
+            <h3>All Document Requests</h3>
+            <p>Search, review, update, or delete a request.</p>
+          </div>
+
+          <div class="dashboard-filters">
+            <div class="dashboard-search-field">
+              <label for="searchInput" class="visually-hidden">Search requests</label>
+              <input
+                type="search"
+                id="searchInput"
+                placeholder="Search student, ID, document, or request number"
+                autocomplete="off"
+              />
+            </div>
+
+            <div class="dashboard-filter-field">
+              <label for="statusFilter" class="visually-hidden">Filter requests by status</label>
+              <select id="statusFilter">
+                <option value="All">All Statuses</option>
+                <option value="Requested">Requested</option>
+                <option value="Received">Received</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="dashboard-table-wrapper">
+          <table class="dashboard-table">
+            <thead>
+              <tr>
+                <th scope="col">Request Number</th>
+                <th scope="col">Student</th>
+                <th scope="col">Document</th>
+                <th scope="col">Date Requested</th>
+                <th scope="col">Date Received</th>
+                <th scope="col">Status</th>
+                <th scope="col" class="action-column">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="requestsTableBody">
+              <tr>
+                <td colspan="7" class="empty-table-message">Loading document requests...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="dashboard-pagination">
+          <button type="button" id="previousPageButton" class="dashboard-outline-button">
+            Previous
+          </button>
+          <span id="pageInformation">Page 1 of 1</span>
+          <button type="button" id="nextPageButton" class="dashboard-outline-button">
+            Next
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <dialog id="requestModal" class="request-dialog" aria-labelledby="modalRequestId">
+      <section class="request-dialog-content">
+        <button type="button" id="closeModalButton" class="request-dialog-close" aria-label="Close request details">
+          &times;
+        </button>
+
+        <div class="request-dialog-header">
+          <p class="dashboard-section-label">Request Details</p>
+          <h3 id="modalRequestId">Request Number</h3>
+          <p>Review the student and document request information.</p>
+        </div>
+
+        <div class="request-dialog-body">
+          <div class="request-information-grid">
+            <div class="request-information-item">
+              <span>Student Name</span>
+              <strong id="modalStudentName">-</strong>
+            </div>
+
+            <div class="request-information-item">
+              <span>Student ID</span>
+              <strong id="modalStudentId">-</strong>
+            </div>
+
+            <div class="request-information-item">
+              <span>Course</span>
+              <strong id="modalCourse">-</strong>
+            </div>
+
+            <div class="request-information-item">
+              <span>College</span>
+              <strong id="modalCollege">-</strong>
+            </div>
+
+            <div class="request-information-item">
+              <span>Requested Document</span>
+              <strong id="modalDocumentType">-</strong>
+            </div>
+
+            <div class="request-information-item">
+              <span>Purpose</span>
+              <strong id="modalPurpose">-</strong>
+            </div>
+
+            <div class="request-information-item">
+              <span>Date Requested</span>
+              <strong id="modalDateRequested">-</strong>
+            </div>
+
+            <div class="request-information-item">
+              <span>Date Received</span>
+              <strong id="modalDateReceived">-</strong>
+            </div>
+
+            <div class="request-information-item">
+              <span>Year Level</span>
+              <strong id="modalYearLevel">-</strong>
+            </div>
+          </div>
+
+          <div class="dashboard-form-group">
+            <label for="modalStatus">Request Status</label>
+            <select id="modalStatus">
+              <option value="Requested">Requested</option>
+              <option value="Received">Received</option>
+            </select>
+          </div>
+
+          <div class="dashboard-form-group">
+            <label for="modalRemarks">Registrar Remarks</label>
+            <textarea id="modalRemarks" rows="4" placeholder="Enter remarks for the student"></textarea>
+          </div>
+
+          <div class="request-dialog-actions">
+            <button type="button" id="deleteModalRequestButton" class="danger-button">
+              Delete Request
+            </button>
+            <button type="button" id="saveRequestButton" class="dashboard-primary-button">
+              Save Changes
+            </button>
+          </div>
+        </div>
+      </section>
+    </dialog>
+
+    <footer class="dashboard-footer">
+      <div class="dashboard-container dashboard-footer-content">
+        <p>&copy; 2026 Mariano Marcos State University</p>
+        <p>College of Teacher Education · Administrative Portal</p>
+      </div>
+    </footer>
+
+    <script src="js/admin-dashboard.js"></script>
+  </body>
+</html>
+
+
+
+
+
+
+
+
+
+
